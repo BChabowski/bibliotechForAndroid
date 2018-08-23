@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Bibliotech for Android</string>
+    <string name="title_activity_add_author">AddAuthor</string>
+</resources>
