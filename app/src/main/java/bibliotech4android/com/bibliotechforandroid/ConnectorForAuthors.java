@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConnectorForAuthors extends DbHelper {
 
     public ConnectorForAuthors(Context context) {
@@ -28,5 +31,15 @@ public class ConnectorForAuthors extends DbHelper {
         Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "+AUTHORS_COL_DEATHYEAR+
                 " FROM "+AUTHORS_TABLE,null);
         return cursor;
+    }
+
+    public ArrayList<String> searchResults(){
+        ArrayList<String> searchResults = new ArrayList<>();
+        Cursor c = showAllAuthors();
+        while(c.moveToNext()) {
+            String s = c.getString(2) + ", " + c.getString(1) + " (" + c.getInt(3) + " - " + c.getInt(4) + ")";
+            searchResults.add(s);
+        }
+        return searchResults;
     }
 }

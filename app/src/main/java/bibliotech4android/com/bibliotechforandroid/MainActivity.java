@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void showAuthors(View view){
-        Intent intent = new Intent(this,ShowAllAuthors.class);
+        Intent intent = new Intent(this,SearchResults.class);
         startActivity(intent);
     }
 }

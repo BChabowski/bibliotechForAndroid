@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddAuthor" />
-        <activity android:name=".ShowAllAuthors"></activity>
+        <activity android:name=".ShowAllAuthors" />
+        <activity android:name=".SearchResults"></activity>
     </application>
 
 </manifest>
