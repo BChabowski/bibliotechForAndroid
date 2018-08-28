@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Vector;
 
 public class ConnectorForAuthors extends DbHelper {
 
@@ -26,20 +26,49 @@ public class ConnectorForAuthors extends DbHelper {
         return result!=-1;
     }
 
-    public Cursor showAllAuthors(){
+    public boolean updateAuthor(Author aut){
         SQLiteDatabase db = getDb();
-        Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "+AUTHORS_COL_DEATHYEAR+
-                " FROM "+AUTHORS_TABLE,null);
-        return cursor;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AUTHORS_COL_NAME, aut.getName());
+        contentValues.put(AUTHORS_COL_LASTNAME,aut.getLastName());
+        contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
+        contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
+        long result = db.update(AUTHORS_TABLE,contentValues,AUTHORS_COL_ID+"=?",new String[]{aut.getId().toString()});
+        return result!=-1;
+
     }
 
-    public ArrayList<String> searchResults(){
+    public Vector<Author> showAllAuthors(){
+        Vector<Author> authorVector = new Vector<>();
+        SQLiteDatabase db = getDb();
+        Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
+                +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE+" ORDER BY "+AUTHORS_COL_LASTNAME,null);
+        while(cursor.moveToNext()){
+            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            authorVector.add(a);
+        }
+        return authorVector;
+    }
+
+    public ArrayList<String> toArrayOfStrings(Vector<Author> av){
+        //niech przyjmuje jako argument Vector<Author> i zamienia go na wersję arraylist<string>
         ArrayList<String> searchResults = new ArrayList<>();
-        Cursor c = showAllAuthors();
-        while(c.moveToNext()) {
-            String s = c.getString(2) + ", " + c.getString(1) + " (" + c.getInt(3) + " - " + c.getInt(4) + ")";
+        for (Author a: av) {
+            String s = a.getLastName() + ", " +a.getName()+ " (" +a.getYearOfBirth()+ " - " +a.getYearOfDeath()+ ")";
             searchResults.add(s);
         }
         return searchResults;
+    }
+
+    public Vector<Author> searchAuthorById(int id) {
+        Vector<Author> authorVector = new Vector<>();
+        SQLiteDatabase db = getDb();
+        Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
+                +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE+" WHERE "+AUTHORS_COL_ID+ " = "+id,null);
+        while(cursor.moveToNext()){
+            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            authorVector.add(a);
+        }
+        return authorVector;
     }
 }
