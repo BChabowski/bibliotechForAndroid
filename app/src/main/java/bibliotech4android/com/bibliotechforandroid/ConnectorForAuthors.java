@@ -34,8 +34,14 @@ public class ConnectorForAuthors extends DbHelper {
         contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
         contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
         long result = db.update(AUTHORS_TABLE,contentValues,AUTHORS_COL_ID+"=?",new String[]{aut.getId().toString()});
-        return result!=-1;
+        return (result!=-1);
 
+    }
+
+    public boolean deleteAuthor(int id){
+        SQLiteDatabase db = getDb();
+        long rowsAffected = db.delete(AUTHORS_TABLE,AUTHORS_COL_ID+"=?",new String[]{String.valueOf(id)});
+        return (rowsAffected>0);
     }
 
     public Vector<Author> showAllAuthors(){

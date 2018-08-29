@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".AddAuthor" />
         <activity android:name=".ShowAllAuthors" />
-        <activity android:name=".SearchResults"></activity>
+        <activity android:name=".SearchResults" />
+        <activity android:name=".BookCard"></activity>
     </application>
 
 </manifest>

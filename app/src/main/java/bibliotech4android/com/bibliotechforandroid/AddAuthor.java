@@ -27,8 +27,10 @@ public class AddAuthor extends AppCompatActivity {
             if (extras.containsKey("Position")) {
                 Button add = findViewById(R.id.addButton);
                 add.setVisibility(Button.INVISIBLE);
-                Button save1 = findViewById(R.id.saveButton);
-                save1.setVisibility(Button.VISIBLE);
+                Button save = findViewById(R.id.saveButton);
+                save.setVisibility(Button.VISIBLE);
+                Button delete = findViewById(R.id.deleteAuthorButton);
+                delete.setVisibility(Button.VISIBLE);
                 EditText name =  findViewById(R.id.nameField);
                 EditText lastName = findViewById(R.id.lastNameField);
                 EditText birth = findViewById(R.id.birthYearField);
@@ -43,7 +45,9 @@ public class AddAuthor extends AppCompatActivity {
             }
         }
         else{ Button save = findViewById(R.id.saveButton);
-        save.setVisibility(Button.INVISIBLE);
+            save.setVisibility(Button.INVISIBLE);
+            Button delete = findViewById(R.id.deleteAuthorButton);
+            delete.setVisibility(Button.INVISIBLE);
         }
 
     }
@@ -65,6 +69,17 @@ public class AddAuthor extends AppCompatActivity {
             finish();
         }
         else Toast.makeText(getApplicationContext(),"Niepowodzenie!",Toast.LENGTH_SHORT).show();
+    }
+    public void delete(View view){
+        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+        boolean isDeleted = cfa.deleteAuthor(authorId);
+        if(isDeleted){
+            Toast.makeText(getApplicationContext(),"Udało się usunąć autora!",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        else Toast.makeText(getApplicationContext(),"Niepowodzenie!",Toast.LENGTH_SHORT).show();
+
+
     }
 
     private Author prepareAuthor(){
