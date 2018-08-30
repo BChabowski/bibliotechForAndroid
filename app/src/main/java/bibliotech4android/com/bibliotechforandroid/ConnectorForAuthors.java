@@ -60,11 +60,13 @@ public class ConnectorForAuthors extends DbHelper {
         //niech przyjmuje jako argument Vector<Author> i zamienia go na wersję arraylist<string>
         ArrayList<String> searchResults = new ArrayList<>();
         for (Author a: av) {
-            String s = a.getLastName() + ", " +a.getName()+ " (" +a.getYearOfBirth()+ " - " +a.getYearOfDeath()+ ")";
+            String s = a.toString();
             searchResults.add(s);
         }
         return searchResults;
     }
+
+
 
     public Vector<Author> searchAuthorById(int id) {
         Vector<Author> authorVector = new Vector<>();

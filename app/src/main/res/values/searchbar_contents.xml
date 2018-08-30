@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="searchbar_author_or_book">Wybierz co wyszukać</string>
+    <string-array name="author_or_book_content">
+        <item>Książka</item>
+        <item>Autor</item>
+    </string-array>
+    <string name="search_book_by_chosen">Wyszukaj książkę po...</string>
+    <string-array name="book_misc_content">
+        <item>Tytuł</item>
+        <item>Autor</item>
+        <item>Tagi</item>
+        <item>ISBN</item>
+        <item>Wydawnictwo</item>
+        <item>Lokalizacja</item>
+        <item>Rok wydania</item>
+    </string-array>
+</resources>

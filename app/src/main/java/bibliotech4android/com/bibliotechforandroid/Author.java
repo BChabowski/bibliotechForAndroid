@@ -25,6 +25,11 @@ public class Author implements Serializable {
         this.yearOfDeath = yearOfDeath;
     }
 
+    @Override
+    public String toString(){
+        return lastName+", "+name+" ("+yearOfBirth+" - "+yearOfDeath+")";
+    }
+
     public Integer getId() {
         return id;
     }
