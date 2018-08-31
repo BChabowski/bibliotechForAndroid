@@ -1,6 +1,7 @@
 package bibliotech4android.com.bibliotechforandroid;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class SearchResults extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
-    RecyclerViewAdapter adapter;
-    ArrayList<String> results  = new ArrayList<>();
-    Vector<Author> av = new Vector<>();
+    private RecyclerViewAdapter adapter;
+    private ArrayList<String> results  = new ArrayList<>();
+    private Vector<Author> av = new Vector<>();
+    private Vector<Book> bv = new Vector<>();
+    private boolean isBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +26,20 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
         setContentView(R.layout.activity_search_results);
 
 
-
-        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-        av = cfa.showAllAuthors();
-        results = cfa.toArrayOfStrings(av);
+        Bundle resources = getIntent().getExtras();
+        Intent intent = getIntent();
+        if(resources.containsKey("misc")){
+            isBook = true;
+            //the rest of book results handling
+        }
+        else {
+            isBook = false;
+            ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+            String searchQuery = intent.getStringExtra("what");
+            Toast.makeText(this,searchQuery,Toast.LENGTH_SHORT).show();
+            av = cfa.selectAuthors(searchQuery);
+            results = cfa.toArrayOfStrings(av);
+        }
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvSearchResults);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -40,11 +53,15 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
     }
     @Override
     public void onItemClick(View view, int position) {
-        int i = av.get(position).getId();
-        Intent intent = new Intent(this,AddAuthor.class);
-        intent.putExtra("Position",i);
-        startActivity(intent);
-        Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        if(isBook){
+
+        }else {
+            int i = av.get(position).getId();
+            Intent intent = new Intent(this, AddAuthor.class);
+            intent.putExtra("Position", i);
+            startActivity(intent);
+            //Toast.makeText(this, "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -52,13 +53,16 @@ public class MainActivity extends AppCompatActivity {
     }
     public void search(View view){
         Spinner bookMisc = findViewById(R.id.bookMiscSpinner);
-        Spinner authorOrBook = findViewById(R.id.AuthorOrBookSpinner);
+        //Spinner authorOrBook = findViewById(R.id.AuthorOrBookSpinner);
+        EditText searchField = findViewById(R.id.searchField);
         Intent intent = new Intent(this,SearchResults.class);
-        intent.putExtra("what",authorOrBook.getSelectedItem().toString());
+        intent.putExtra("what",searchField.getText().toString());
+        //intent.putExtra("where",authorOrBook.getSelectedItem().toString());
         if(bookMisc.isEnabled()) {
             intent.putExtra("misc",bookMisc.getSelectedItem().toString());
         }
-        //startActivity(intent);
+        //Toast.makeText(this,searchField.getText().toString(),Toast.LENGTH_SHORT).show();
+        startActivity(intent);
     }
 }
 

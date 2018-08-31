@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -42,6 +44,28 @@ public class ConnectorForAuthors extends DbHelper {
         SQLiteDatabase db = getDb();
         long rowsAffected = db.delete(AUTHORS_TABLE,AUTHORS_COL_ID+"=?",new String[]{String.valueOf(id)});
         return (rowsAffected>0);
+    }
+
+    public Vector<Author> selectAuthors(String query){
+        Vector<Author> authorVector = new Vector<>();
+        String[] searched;
+
+            searched = query.split("\\s+");
+
+        String searchQuery = "SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
+                +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE;
+
+        for(int i = 0; i<searched.length;i++){
+            if (i==0) searchQuery += " WHERE "+AUTHORS_COL_LASTNAME + " LIKE ? ";
+            else searchQuery += " OR " + AUTHORS_COL_LASTNAME + " LIKE ? ";
+        }
+        searchQuery += " ORDER BY "+AUTHORS_COL_LASTNAME;
+        Cursor cursor = getDb().rawQuery(searchQuery,searched);
+        while(cursor.moveToNext()){
+            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            authorVector.add(a);
+        }
+        return authorVector;
     }
 
     public Vector<Author> showAllAuthors(){
