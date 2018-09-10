@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.Vector;
+
 public class ConnectorForBooks extends DbHelper {
 
     public ConnectorForBooks(Context context) {
@@ -48,4 +50,7 @@ public class ConnectorForBooks extends DbHelper {
         return (rowsAffected>0);
     }
 
+    public Vector<Book> searchBooks(String what, String where){
+        return new Vector<>();
+    }
 }
