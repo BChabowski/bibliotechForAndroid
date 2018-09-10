@@ -1,5 +1,7 @@
 package bibliotech4android.com.bibliotechforandroid;
 
+import android.content.Context;
+
 public class Book {
     private Integer id;
     private String title;
@@ -14,9 +16,8 @@ public class Book {
     private String localization;
 
 
-
-    public Book(String title, String publisher, String isbnNo, Integer issueYear, Integer authorid, String tags, String notes,
-                String isLent, String localization) {
+    public Book(String title, String publisher, Integer issueYear,String isbnNo, Integer authorid, String tags, String notes,String isLent,
+                String whoLent, String localization) {
         this.title = title;
         this.publisher = publisher;
         this.isbnNo = isbnNo;
@@ -25,12 +26,12 @@ public class Book {
         this.tags = tags;
         this.notes = notes;
         this.isLent = isLent;
-        this.whoLent = "";
+        this.whoLent = whoLent;
         this.localization = localization;
     }
 
-    public Book(Integer id, String title, String publisher, String isbnNo, Integer issueYear, Integer authorid, String isLent,
-                String whoLent, String tags, String notes, String localization) {
+    public Book(Integer id, String title, String publisher, Integer issueYear, String isbnNo, Integer authorid,  String tags, String notes,
+                String isLent, String whoLent, String localization) {
         this.id = id;
         this.title = title;
         this.publisher = publisher;
@@ -43,6 +44,12 @@ public class Book {
         this.notes = notes;
         this.localization = localization;
     }
+
+    public String toString(Context context) {
+        ConnectorForAuthors cfa = new ConnectorForAuthors(context);
+        return title +", "+ cfa.searchAuthorById(authorid).toString()+", "+publisher+", "+issueYear;
+    }
+
     public Integer getId() { return id; }
 
     public String getTitle() {

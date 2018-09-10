@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
         final Spinner authorOrBook = findViewById(R.id.AuthorOrBookSpinner);
         final Spinner bookMisc = findViewById(R.id.bookMiscSpinner);
+        EditText searchField = findViewById(R.id.searchField);
+        searchField.setText("");
 
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
             @Override
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void showAuthors(View view){
-        Intent intent = new Intent(this,SearchResults.class);
+        Intent intent = new Intent(this,BookCard.class);
         startActivity(intent);
     }
     public void search(View view){
