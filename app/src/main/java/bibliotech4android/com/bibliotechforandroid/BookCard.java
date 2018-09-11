@@ -61,6 +61,7 @@ public class BookCard extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("BookId")){
+                //if activity started as card for existing book
                 Intent intent = getIntent();
                 bookId = Integer.parseInt(intent.getStringExtra("BookId"));
 
@@ -98,6 +99,7 @@ public class BookCard extends AppCompatActivity {
 
         }
         else {
+            //if activity started as page for adding new book
             add.setVisibility(View.VISIBLE);
             update.setVisibility(View.INVISIBLE);
             delete.setVisibility(View.INVISIBLE);
@@ -111,6 +113,7 @@ public class BookCard extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isLentSpinner.getSelectedItem().toString().equals(lentOrNot[1])) {
+                    //if book was lent, show who lent it
                     whoLentField.setVisibility(View.VISIBLE);
                     whoLentTV.setVisibility(View.VISIBLE);
 
@@ -187,6 +190,7 @@ public class BookCard extends AppCompatActivity {
     }
 
     private Book prepareBook() {
+        //method to prepare book for insertion
         EditText title = findViewById(R.id.bookTitlefField);
         EditText publisher = findViewById(R.id.bookPublisherField);
         EditText issueYear = findViewById(R.id.bookIssueYearField);
@@ -221,6 +225,7 @@ public class BookCard extends AppCompatActivity {
     }
 
     private boolean isBookReady(){
+        //method to validate data
         EditText title = findViewById(R.id.bookTitlefField);
         AutoCompleteTextView authorTV = findViewById(R.id.authorATV);
         EditText publisher = findViewById(R.id.bookPublisherField);
