@@ -33,7 +33,6 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
             ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
             String searchQuery = intent.getStringExtra("what");
             String where = intent.getStringExtra("misc");
-            Log.i("-----------------------",where);
             Integer column = Integer.parseInt(where);
             if(column==1){
                 //cfb.allbooksbyauthor
