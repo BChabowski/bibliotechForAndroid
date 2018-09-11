@@ -82,25 +82,25 @@ public class ConnectorForAuthors extends DbHelper {
 
     public ArrayList<String> toArrayOfStrings(Vector<Author> av){
         //niech przyjmuje jako argument Vector<Author> i zamienia go na wersję arraylist<string>
-        ArrayList<String> searchResults = new ArrayList<>();
+        ArrayList<String> authorsAsStringsArray = new ArrayList<>();
         for (Author a: av) {
             String s = a.toString();
-            searchResults.add(s);
+            authorsAsStringsArray.add(s);
         }
-        return searchResults;
+        return authorsAsStringsArray;
     }
 
 
 
-    public Vector<Author> searchAuthorById(int id) {
-        Vector<Author> authorVector = new Vector<>();
+    public Author searchAuthorById(int id) {
+        Author author = new Author();
         SQLiteDatabase db = getDb();
         Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
                 +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE+" WHERE "+AUTHORS_COL_ID+ " = "+id,null);
         while(cursor.moveToNext()){
-            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
-            authorVector.add(a);
+            author = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+
         }
-        return authorVector;
+        return author;
     }
 }

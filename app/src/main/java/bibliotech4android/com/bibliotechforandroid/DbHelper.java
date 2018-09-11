@@ -25,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String BOOKS_COL_TAGS ="tags";
     public static final String BOOKS_COL_NOTES = "notes";
     private static DbHelper dbInstance;
-    private static Context mctx;
+    protected static Context mctx;
 
 
 

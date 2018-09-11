@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import java.util.Vector;
 
-public class AddAuthor extends AppCompatActivity {
+public class AuthorCard extends AppCompatActivity {
 
     Integer authorId;
 
@@ -37,11 +37,11 @@ public class AddAuthor extends AppCompatActivity {
                 EditText death = findViewById(R.id.deathYearField);
 
                 authorId = extras.getInt("Position");
-                Vector<Author> author = cfa.searchAuthorById(authorId);
-                name.setText(author.get(0).getName());
-                lastName.setText(author.get(0).getLastName());
-                birth.setText(author.get(0).getYearOfBirth().toString());
-                death.setText(author.get(0).getYearOfDeath().toString());
+                Author author = cfa.searchAuthorById(authorId);
+                name.setText(author.getName());
+                lastName.setText(author.getLastName());
+                birth.setText(author.getYearOfBirth().toString());
+                death.setText(author.getYearOfDeath().toString());
             }
         } else {
             Button save = findViewById(R.id.saveButton);

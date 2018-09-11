@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private String[] authorOrBookContent;
-    private static final String[] bookMiscContent = {"Tytuł","Autor","Tagi","ISBN","Wydawnictwo","Lokalizacja","Rok wydania"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addAuthor(View view){
-        Intent intent = new Intent(this,AddAuthor.class);
+        Intent intent = new Intent(this,AuthorCard.class);
         startActivity(intent);
     }
     public void showAuthors(View view){
@@ -61,9 +60,10 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("what",searchField.getText().toString());
         //intent.putExtra("where",authorOrBook.getSelectedItem().toString());
         if(bookMisc.isEnabled()) {
-            intent.putExtra("misc",bookMisc.getSelectedItem().toString());
+            intent.putExtra("misc",String.valueOf(bookMisc.getSelectedItemId()));
+            //Toast.makeText(this,"enabled",Toast.LENGTH_SHORT).show();
         }
-        //Toast.makeText(this,searchField.getText().toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,intent.getStringExtra("misc"),Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 }
