@@ -5,27 +5,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "bibliotech.db";
-    public static final String AUTHORS_TABLE = "authors";
-    public static final String AUTHORS_COL_ID = "id";
-    public static final String AUTHORS_COL_NAME = "name";
-    public static final String AUTHORS_COL_LASTNAME = "lastname";
-    public static final String AUTHORS_COL_BIRTHYEAR = "birthyear";
-    public static final String AUTHORS_COL_DEATHYEAR = "deathyear";
-    public static final String BOOKS_TABLE = "books";
-    public static final String BOOKS_COL_ID = "id";
-    public static final String BOOKS_COL_TITLE ="title";
-    public static final String BOOKS_COL_PUBLISHER = "publisher";
-    public static final String BOOKS_COL_ISBN = "isbn";
-    public static final String BOOKS_COL_ISSUEYEAR ="issueyear";
-    public static final String BOOKS_COL_AUTHORID = "authorid";
-    public static final String BOOKS_COL_LOCALIZATION ="localization";
-    public static final String BOOKS_COL_ISLENT ="islent";
-    public static final String BOOKS_COL_WHOLENT ="wholent";
-    public static final String BOOKS_COL_TAGS ="tags";
-    public static final String BOOKS_COL_NOTES = "notes";
+    private static final String DATABASE_NAME = "bibliotech.db";
+    static final String AUTHORS_TABLE = "authors";
+    static final String AUTHORS_COL_ID = "id";
+    static final String AUTHORS_COL_NAME = "name";
+    static final String AUTHORS_COL_LASTNAME = "lastname";
+    static final String AUTHORS_COL_BIRTHYEAR = "birthyear";
+    static final String AUTHORS_COL_DEATHYEAR = "deathyear";
+    static final String BOOKS_TABLE = "books";
+    static final String BOOKS_COL_ID = "id";
+    static final String BOOKS_COL_TITLE ="title";
+    static final String BOOKS_COL_PUBLISHER = "publisher";
+    static final String BOOKS_COL_ISBN = "isbn";
+    static final String BOOKS_COL_ISSUEYEAR ="issueyear";
+    static final String BOOKS_COL_AUTHORID = "authorid";
+    static final String BOOKS_COL_LOCALIZATION ="localization";
+    static final String BOOKS_COL_ISLENT ="islent";
+    static final String BOOKS_COL_WHOLENT ="wholent";
+    static final String BOOKS_COL_TAGS ="tags";
+    static final String BOOKS_COL_NOTES = "notes";
+    static final String USER_TABLE = "user";
+    static final String USER_COL_ID = "userid";
+    static final String USER_COL_LOGIN = "login";
+    static final String USER_COL_SALT = "salt";
+    static final String USER_COL_PASS = "pass";
+    static final String USER_COL_FAVAUT = "favaut";
+
     private static DbHelper dbInstance;
-    protected static Context mctx;
+    private Context mctx;
 
 
 
@@ -44,6 +51,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 " integer, "+BOOKS_COL_AUTHORID+" integer, "+BOOKS_COL_LOCALIZATION+" text, "+BOOKS_COL_ISLENT+" text, "+BOOKS_COL_WHOLENT+
                 " text, "+BOOKS_COL_TAGS+" text, "+BOOKS_COL_NOTES+" text, foreign key("+BOOKS_COL_AUTHORID+") references "
                 +AUTHORS_TABLE+"("+AUTHORS_COL_ID+"))");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+USER_TABLE+" ("+USER_COL_ID+" INTEGER, "+USER_COL_LOGIN+" TEXT, "
+                +USER_COL_SALT+" TEXT, "+USER_COL_PASS+" TEXT, "+USER_COL_FAVAUT+" TEXT)");
     }
 
     @Override
@@ -54,9 +63,9 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public static synchronized SQLiteDatabase getDb(){
+    public static synchronized SQLiteDatabase getDb(Context context){
         if(dbInstance == null){
-            dbInstance = new DbHelper(mctx);
+            dbInstance = new DbHelper(context);
         }
         return dbInstance.getWritableDatabase();
     }

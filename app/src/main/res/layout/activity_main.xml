@@ -10,30 +10,30 @@
         android:id="@+id/addAuthorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="192dp"
         android:onClick="addAuthor"
-        android:text="Dodaj"
+        android:text="Dodaj nowego autora"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/showAllButton"
+        android:id="@+id/addBookButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="84dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="112dp"
         android:onClick="showAuthors"
-        android:text="Pokaż"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Dodaj nową książkę"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/AuthorOrBookSpinner"
         android:layout_width="153dp"
         android:layout_height="34dp"
-        android:layout_marginBottom="248dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="204dp"
+        android:layout_marginStart="28dp"
         android:entries="@array/author_or_book_content"
         android:prompt="@string/searchbar_author_or_book"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,43 +43,54 @@
         android:id="@+id/bookMiscSpinner"
         android:layout_width="179dp"
         android:layout_height="34dp"
-        android:layout_marginBottom="248dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginBottom="204dp"
+        android:layout_marginEnd="16dp"
         android:entries="@array/book_misc_content"
         android:prompt="@string/search_book_by_chosen"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/AuthorOrBookSpinner" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/searchButton"
         android:layout_width="84dp"
         android:layout_height="43dp"
-        android:layout_marginBottom="172dp"
-        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="148dp"
         android:onClick="search"
         android:text="Szukaj"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="86dp"
+        android:id="@+id/isLoggedTextView"
+        android:layout_width="136dp"
         android:layout_height="24dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="41dp"
-        android:text="Wyszukaj..."
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="45dp"
+        android:text="Niezalogowano"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addAuthorButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/searchField"
         android:layout_width="357dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginBottom="23dp"
+        android:layout_marginStart="12dp"
         android:ems="10"
+        android:hint="Wpisz frazę do wyszukania"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/AuthorOrBookSpinner"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="30dp"
+        android:onClick="login"
+        android:text="Zaloguj się"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

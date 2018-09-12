@@ -26,6 +26,9 @@ public class BookCard extends AppCompatActivity {
     Integer authorId = null;
     ArrayList<String> authorsArray;
     private String[] lentOrNot;
+    ArrayAdapter<String> adapter;
+    Vector<Author> authorVector;
+    AutoCompleteTextView authorTV;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,12 +38,13 @@ public class BookCard extends AppCompatActivity {
         Button delete = findViewById(R.id.deleteBookButton);
 
         ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
-        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+        final ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
         //autocompletetextview handling
-        final Vector<Author> authorVector = cfa.showAllAuthors();
+        authorVector = cfa.showAllAuthors();
         authorsArray = cfa.toArrayOfStrings(authorVector);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, authorsArray);
-        final AutoCompleteTextView authorTV = findViewById(R.id.authorATV);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, authorsArray);
+
+        authorTV = findViewById(R.id.authorATV);
         authorTV.setText("");
         authorTV.setAdapter(adapter);
         authorTV.setThreshold(2);
@@ -54,10 +58,10 @@ public class BookCard extends AppCompatActivity {
                         break;
                     }
                 }
-                Toast.makeText(getApplicationContext(), "Pozycja: " + position + ", id: " + authorId, Toast.LENGTH_SHORT).show();
 
             }
         });
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("BookId")){
@@ -158,9 +162,17 @@ public class BookCard extends AppCompatActivity {
         }
     }
 
+    @Override
     public void onResume() {
         super.onResume();
-        ////////////////////////////i co dalej???????
+        //updating list of authors after adding a new one
+        adapter.clear();
+        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+        authorVector = cfa.showAllAuthors();
+        authorsArray = cfa.toArrayOfStrings(authorVector);
+        for (String s : authorsArray){
+            adapter.add(s);
+        }
     }
 
     public void deleteBook(View view){
@@ -186,7 +198,6 @@ public class BookCard extends AppCompatActivity {
     public void addAuthor(View view){
         Intent intent = new Intent(this,AuthorCard.class);
         startActivity(intent);
-
     }
 
     private Book prepareBook() {
@@ -233,12 +244,11 @@ public class BookCard extends AppCompatActivity {
         EditText tags = findViewById(R.id.bookTagsField);
         EditText whoLent = findViewById(R.id.bookWhoLentField);
         Spinner isLent = findViewById(R.id.isLentSpinner);
-//        Toast.makeText(getApplicationContext(),"działa",Toast.LENGTH_LONG).show();
 
 
-        if(authorId==null||title.getText().equals("")||publisher.getText().equals("")||issueYear.getText().equals("")||
+        if(title.getText().equals("")||publisher.getText().equals("")||issueYear.getText().equals("")||
                 !issueYear.getText().toString().matches("\\d+")|| tags.getText().equals("")|| authorTV.getText().equals("")||
-                (isLent.getSelectedItem().toString().equals(lentOrNot[1])&&whoLent.getText().equals(""))){
+                ((isLent.getSelectedItem().toString().equals(lentOrNot[1]))&&(whoLent.getText().equals("")))){
             Toast.makeText(getApplicationContext(),"Proszę wypełnić poprawnymi danymi pola \"Tytuł\",\"Wydawnictwo\",\"Rok publikacji\"," +
                     "\"Tagi\",\"Stan\" i \"Wypożyczył\"",Toast.LENGTH_LONG).show();
             return false;
