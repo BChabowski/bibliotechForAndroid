@@ -68,7 +68,6 @@ public class BookCard extends AppCompatActivity {
                 //if activity started as card for existing book
                 Intent intent = getIntent();
                 bookId = Integer.parseInt(intent.getStringExtra("BookId"));
-
                 add.setVisibility(View.INVISIBLE);
                 update.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
@@ -87,6 +86,7 @@ public class BookCard extends AppCompatActivity {
                 Vector<Book> bv = cfb.selectBooks(bookId.toString(),7);
                 Author author = cfa.searchAuthorById(bv.get(0).getAuthorid());
                 authorTV.setText(author.toString());
+                authorId = bv.get(0).getAuthorid();
                 title.setText(bv.get(0).getTitle());
                 publisher.setText(bv.get(0).getPublisher());
                 issueYear.setText(bv.get(0).getIssueYear().toString());
@@ -153,7 +153,9 @@ public class BookCard extends AppCompatActivity {
     public void updateBook(View view){
         ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
         Book book = prepareBook();
+
         if(book!=null){
+
             boolean isUpdated = cfb.updateBook(book);
             if(isUpdated) {
                 Toast.makeText(getApplicationContext(),"Poprawnie zaktualizowano książkę!",Toast.LENGTH_SHORT).show();
@@ -210,6 +212,8 @@ public class BookCard extends AppCompatActivity {
         EditText whoLent = findViewById(R.id.bookWhoLentField);
         EditText tags = findViewById(R.id.bookTagsField);
         EditText notes = findViewById(R.id.bookNotesField);
+        Spinner isLent = findViewById(R.id.isLentSpinner);
+
         if(isBookReady()) {
         String bookTitle = title.getText().toString();
         String bookPublisher = publisher.getText().toString();
@@ -220,7 +224,7 @@ public class BookCard extends AppCompatActivity {
             String bookTags = tags.getText().toString();
             String bookNotes = notes.getText().toString();
 
-            String bookIsLent = "Dostępna";
+            String bookIsLent = isLent.getSelectedItem().toString();
 
             String bookWhoLent = whoLent.getText().toString();
             String bookLocalization = localization.getText().toString();
