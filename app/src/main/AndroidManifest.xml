@@ -22,7 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".AuthorCard" />
-        <activity android:name=".ShowAllAuthors" />
         <activity android:name=".SearchResults" />
         <activity android:name=".BookCard" />
         <activity android:name=".LoginScreen"></activity>

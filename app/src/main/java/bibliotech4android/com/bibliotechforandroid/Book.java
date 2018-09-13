@@ -1,8 +1,6 @@
 package bibliotech4android.com.bibliotechforandroid;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 public class Book {
     private Integer id;
@@ -50,7 +48,7 @@ public class Book {
     public String toString(Context context) {
         ConnectorForAuthors cfa = new ConnectorForAuthors(context);
         Author author = cfa.searchAuthorById(authorid);
-        return title +", "+ author.toString()+", "+publisher+", "+issueYear;
+        return title +"\n"+ author.toString()+"\n"+publisher+", "+issueYear;
     }
 
     public Integer getId() { return id; }

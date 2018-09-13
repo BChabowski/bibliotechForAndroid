@@ -1,8 +1,11 @@
 package bibliotech4android.com.bibliotechforandroid;
 
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,82 +23,113 @@ public class AuthorCard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_author);
+
         ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            if (extras.containsKey("Position")) {
-                Button add = findViewById(R.id.addButton);
-                add.setVisibility(Button.INVISIBLE);
-                Button save = findViewById(R.id.saveButton);
-                save.setVisibility(Button.VISIBLE);
-                Button delete = findViewById(R.id.deleteAuthorButton);
-                delete.setVisibility(Button.VISIBLE);
-                EditText name = findViewById(R.id.nameField);
-                EditText lastName = findViewById(R.id.lastNameField);
-                EditText birth = findViewById(R.id.birthYearField);
-                EditText death = findViewById(R.id.deathYearField);
+        Button save = findViewById(R.id.saveButton);
+        Button delete = findViewById(R.id.deleteAuthorButton);
+        Button add = findViewById(R.id.addButton);
 
-                authorId = extras.getInt("Position");
-                Author author = cfa.searchAuthorById(authorId);
-                name.setText(author.getName());
-                lastName.setText(author.getLastName());
-                birth.setText(author.getYearOfBirth().toString());
-                death.setText(author.getYearOfDeath().toString());
+        EditText name = findViewById(R.id.nameField);
+        EditText lastName = findViewById(R.id.lastNameField);
+        EditText birth = findViewById(R.id.birthYearField);
+        EditText death = findViewById(R.id.deathYearField);
+
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                if (extras.containsKey("Position")) {
+                    //it's an existing author and we are editing him!
+                    add.setVisibility(Button.INVISIBLE);
+
+                    save.setVisibility(Button.VISIBLE);
+                    delete.setVisibility(Button.VISIBLE);
+
+
+                    authorId = extras.getInt("Position");
+                    Author author = cfa.searchAuthorById(authorId);
+                    name.setText(author.getName());
+                    lastName.setText(author.getLastName());
+
+                    if(author.getYearOfBirth()==null) birth.setText("");
+                    else birth.setText(author.getYearOfBirth().toString());
+
+                    if(author.getYearOfDeath()==null) death.setText("");
+                    else death.setText(author.getYearOfDeath().toString());
+                }
+            } else {
+                //it's a new author!
+                save.setVisibility(Button.INVISIBLE);
+                delete.setVisibility(Button.INVISIBLE);
             }
-        } else {
-            Button save = findViewById(R.id.saveButton);
+
+        if(!LoginScreen.isLogged) {
+                //if user is not logged in, disable EditTexts and hide buttons
             save.setVisibility(Button.INVISIBLE);
-            Button delete = findViewById(R.id.deleteAuthorButton);
             delete.setVisibility(Button.INVISIBLE);
+            add.setVisibility(Button.INVISIBLE);
+
+            name.setInputType(InputType.TYPE_NULL);
+            lastName.setInputType(InputType.TYPE_NULL);
+            birth.setInputType(InputType.TYPE_NULL);
+            death.setInputType(InputType.TYPE_NULL);
         }
 
     }
 
 
     public void add(View view) {
-        EditText birth = findViewById(R.id.birthYearField);
-        EditText death = findViewById(R.id.deathYearField);
         ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-        if (birth.getText().toString().matches("\\d+") && death.getText().toString().matches("\\d+")) {
-            boolean isAdded = cfa.addAuthor(prepareAuthor());
+        Author a = prepareAuthor();
+        if(a!=null) {
+            boolean isAdded = cfa.addAuthor(a);
             if (isAdded) {
                 Toast.makeText(getApplicationContext(), "Udało się dodać autora!", Toast.LENGTH_SHORT).show();
                 finish();
             } else
                 Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+        }
 
-        } else
-            Toast.makeText(getApplicationContext(), "W polach \"Rok urodzenia\" i \"Rok śmierci\" " +
-                    "powinny znajdować się tylko liczby!", Toast.LENGTH_SHORT).show();
     }
 
     public void save(View view) {
-        EditText birth = findViewById(R.id.birthYearField);
-        EditText death = findViewById(R.id.deathYearField);
         ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-
-        if (birth.getText().toString().matches("\\d+") && death.getText().toString().matches("\\d+")) {
-            boolean isSaved = cfa.updateAuthor(prepareAuthor());
-            if (isSaved) {
-                Toast.makeText(getApplicationContext(), "Udało się zaktualizować autora!", Toast.LENGTH_SHORT).show();
-                finish();
-            } else
-                Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
-
-        } else
-            Toast.makeText(getApplicationContext(), "W polach \"Rok urodzenia\" i \"Rok śmierci\" " +
-                    "powinny znajdować się tylko liczby!", Toast.LENGTH_SHORT).show();
+            Author a = prepareAuthor();
+            if(a!=null) {
+                boolean isSaved = cfa.updateAuthor(a);
+                if (isSaved) {
+                    Toast.makeText(getApplicationContext(), "Udało się zaktualizować autora!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else
+                    Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+            }
     }
 
-    public void delete(View view) {
-        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-        boolean isDeleted = cfa.deleteAuthor(authorId);
-        if (isDeleted) {
-            Toast.makeText(getApplicationContext(), "Udało się usunąć autora!", Toast.LENGTH_SHORT).show();
-            finish();
-        } else Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
 
+    public void delete(View view) {
+        final ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+        ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
+        //check if author has some books linked to him
+        Vector<Book> bv = cfb.selectBooks(authorId.toString(),8);
+        if(bv.isEmpty()) {
+            Dialog.OnClickListener listener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == Dialog.BUTTON_POSITIVE) {
+                        boolean isDeleted = cfa.deleteAuthor(authorId);
+                        if (isDeleted) {
+                            Toast.makeText(getApplicationContext(), "Udało się usunąć autora!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else
+                            Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Czy na pewno usunąć autora?").setNegativeButton("Nie", listener).setPositiveButton("Tak", listener).show();
+
+
+        }else Toast.makeText(this,"Nie udało się usunąć autora! Być może w bazie danych wciąż" +
+                " znajdują się przypisane do niego książki",Toast.LENGTH_LONG).show();
 
     }
 
@@ -109,10 +143,17 @@ public class AuthorCard extends AppCompatActivity {
         //null handling
         Integer birthYear;
         Integer deathYear;
+
         if (bY.equals("")) birthYear = null;
-        else birthYear = Integer.parseInt(bY);
+        else if(bY.matches("\\d+")) birthYear = Integer.parseInt(bY);
+        else {Toast.makeText(this,"W polu \"Rok urodzenia\" powinny znajdować się tylko cyfry!",Toast.LENGTH_SHORT).show();
+        return null;
+        }
         if (dY.equals("")) deathYear = null;
-        else deathYear = Integer.parseInt(dY);
+        else if(dY.matches("\\d+")) deathYear = Integer.parseInt(dY);
+        else {Toast.makeText(this,"W polu \"Rok śmierci\" powinny znajdować się tylko cyfry!",Toast.LENGTH_SHORT).show();
+        return null;
+        }
 
         //if it's edited author
         if (authorId != null)

@@ -5,9 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,8 +37,19 @@ public class BookCard extends AppCompatActivity {
         Button update = findViewById(R.id.updateBookButton);
         Button delete = findViewById(R.id.deleteBookButton);
 
+        EditText title = findViewById(R.id.bookTitlefField);
+        EditText publisher = findViewById(R.id.bookPublisherField);
+        EditText issueYear = findViewById(R.id.bookIssueYearField);
+        EditText isbn = findViewById(R.id.bookIsbnField);
+        EditText localization = findViewById(R.id.bookLocalizationField);
+        Spinner isLent = findViewById(R.id.isLentSpinner);
+        EditText whoLent = findViewById(R.id.bookWhoLentField);
+        EditText tags = findViewById(R.id.bookTagsField);
+        EditText notes = findViewById(R.id.bookNotesField);
+
         ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
         final ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+
         //autocompletetextview handling
         authorVector = cfa.showAllAuthors();
         authorsArray = cfa.toArrayOfStrings(authorVector);
@@ -72,17 +83,6 @@ public class BookCard extends AppCompatActivity {
                 update.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
 
-                EditText title = findViewById(R.id.bookTitlefField);
-                EditText publisher = findViewById(R.id.bookPublisherField);
-                EditText issueYear = findViewById(R.id.bookIssueYearField);
-                EditText isbn = findViewById(R.id.bookIsbnField);
-                EditText localization = findViewById(R.id.bookLocalizationField);
-                Spinner isLent = findViewById(R.id.isLentSpinner);
-                EditText whoLent = findViewById(R.id.bookWhoLentField);
-                EditText tags = findViewById(R.id.bookTagsField);
-                EditText notes = findViewById(R.id.bookNotesField);
-
-
                 Vector<Book> bv = cfb.selectBooks(bookId.toString(),7);
                 Author author = cfa.searchAuthorById(bv.get(0).getAuthorid());
                 authorTV.setText(author.toString());
@@ -107,6 +107,26 @@ public class BookCard extends AppCompatActivity {
             add.setVisibility(View.VISIBLE);
             update.setVisibility(View.INVISIBLE);
             delete.setVisibility(View.INVISIBLE);
+        }
+        if(!LoginScreen.isLogged)
+        {
+            //if user is not logged, don't show him any buttons and disable EditTexts
+            add.setVisibility(View.INVISIBLE);
+            update.setVisibility(View.INVISIBLE);
+            delete.setVisibility(View.INVISIBLE);
+            Button addAuthor = findViewById(R.id.bookAddAuthorButton);
+            addAuthor.setVisibility(View.INVISIBLE);
+
+            title.setInputType(InputType.TYPE_NULL);
+            publisher.setInputType(InputType.TYPE_NULL);
+            issueYear.setInputType(InputType.TYPE_NULL);
+            isbn.setInputType(InputType.TYPE_NULL);
+            localization.setInputType(InputType.TYPE_NULL);
+            isLent.setEnabled(false);
+            whoLent.setVisibility(View.INVISIBLE);
+            tags.setInputType(InputType.TYPE_NULL);
+            notes.setInputType(InputType.TYPE_NULL);
+            authorTV.setInputType(InputType.TYPE_NULL);
         }
         Resources resources = getResources();
         lentOrNot = resources.getStringArray(R.array.lent_not_lent);
@@ -146,7 +166,7 @@ public class BookCard extends AppCompatActivity {
             }
             else Toast.makeText(getApplicationContext(),"Nie udało się dodać książki",Toast.LENGTH_SHORT).show();
         }
-        else  Toast.makeText(getApplicationContext(),"To nie powinno się pojawić",Toast.LENGTH_SHORT).show();
+        //else  Toast.makeText(getApplicationContext(),"To nie powinno się pojawić",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -225,8 +245,11 @@ public class BookCard extends AppCompatActivity {
             String bookNotes = notes.getText().toString();
 
             String bookIsLent = isLent.getSelectedItem().toString();
-
-            String bookWhoLent = whoLent.getText().toString();
+            String bookWhoLent;
+            if(isLent.getSelectedItem().toString().equals(lentOrNot[1])) {
+               bookWhoLent = whoLent.getText().toString();
+            }
+            else bookWhoLent = "";
             String bookLocalization = localization.getText().toString();
 
 
@@ -248,23 +271,25 @@ public class BookCard extends AppCompatActivity {
         EditText tags = findViewById(R.id.bookTagsField);
         EditText whoLent = findViewById(R.id.bookWhoLentField);
         Spinner isLent = findViewById(R.id.isLentSpinner);
+        //Toast.makeText(getApplicationContext(),"tada",Toast)
 
-
-        if(title.getText().equals("")||publisher.getText().equals("")||issueYear.getText().equals("")||
-                !issueYear.getText().toString().matches("\\d+")|| tags.getText().equals("")|| authorTV.getText().equals("")||
-                ((isLent.getSelectedItem().toString().equals(lentOrNot[1]))&&(whoLent.getText().equals("")))){
-            Toast.makeText(getApplicationContext(),"Proszę wypełnić poprawnymi danymi pola \"Tytuł\",\"Wydawnictwo\",\"Rok publikacji\"," +
-                    "\"Tagi\",\"Stan\" i \"Wypożyczył\"",Toast.LENGTH_LONG).show();
+        if(title.getText().toString().equals("")||publisher.getText().toString().equals("")||issueYear.getText().toString().equals("")||
+                !issueYear.getText().toString().matches("\\d+")|| tags.getText().toString().equals("")||
+                authorTV.getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(),"Proszę wypełnić poprawnymi danymi pola \"Tytuł\", \"Autor\",\"Wydawnictwo\",\"Rok publikacji\" i" +
+                    " \"Tagi\"",Toast.LENGTH_LONG).show();
             return false;
         }
-        for(String s : authorsArray){
-            if(!s.equals(authorTV.getText())) break;
-            else {
-                Toast.makeText(getApplicationContext(),"Proszę poprawić pole \"Autor\". Jeżeli autora nie ma na liście podpowiedzi," +
-                        " należy go dodać przyciskiem \"Dodaj\"",Toast.LENGTH_LONG).show();
-                return false;
-            }
+        if(authorId==null) {
+            Toast.makeText(getApplicationContext(), "Proszę poprawić pole \"Autor\". Jeżeli autora nie ma na liście podpowiedzi," +
+                    " należy go dodać przyciskiem \"Dodaj\"", Toast.LENGTH_LONG).show();
+            return false;
         }
+        if(isLent.getSelectedItem().toString().equals(lentOrNot[1])&&whoLent.getText().toString().equals("")){
+            Toast.makeText(getApplicationContext(),"Pola \"Stan\" i \"Wypożyczył\" nie zgadzają się.",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
 }

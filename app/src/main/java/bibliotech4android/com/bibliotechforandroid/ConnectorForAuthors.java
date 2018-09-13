@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -22,8 +20,13 @@ public class ConnectorForAuthors extends DbHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(AUTHORS_COL_NAME, aut.getName());
         contentValues.put(AUTHORS_COL_LASTNAME,aut.getLastName());
-        contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
-        contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
+
+        if(aut.getYearOfBirth()==null) contentValues.putNull(AUTHORS_COL_BIRTHYEAR);
+        else contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
+
+        if(aut.getYearOfDeath()==null) contentValues.putNull(AUTHORS_COL_DEATHYEAR);
+        else contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
+
         long result = db.insert(AUTHORS_TABLE,null,contentValues);
         //if result == -1, then insert was unsuccessful
         return result!=-1;
@@ -34,8 +37,13 @@ public class ConnectorForAuthors extends DbHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(AUTHORS_COL_NAME, aut.getName());
         contentValues.put(AUTHORS_COL_LASTNAME,aut.getLastName());
-        contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
-        contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
+
+        if(aut.getYearOfBirth()==null) contentValues.putNull(AUTHORS_COL_BIRTHYEAR);
+        else contentValues.put(AUTHORS_COL_BIRTHYEAR,aut.getYearOfBirth());
+
+        if(aut.getYearOfDeath()==null) contentValues.putNull(AUTHORS_COL_DEATHYEAR);
+        else contentValues.put(AUTHORS_COL_DEATHYEAR, aut.getYearOfDeath());
+
         long result = db.update(AUTHORS_TABLE,contentValues,AUTHORS_COL_ID+"=?",new String[]{aut.getId().toString()});
         return (result!=-1);
 
@@ -63,7 +71,12 @@ public class ConnectorForAuthors extends DbHelper {
         searchQuery += " ORDER BY "+AUTHORS_COL_LASTNAME;
         Cursor cursor = getDb(mContext).rawQuery(searchQuery,searched);
         while(cursor.moveToNext()){
-            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            Integer bday = null;
+            Integer dday = null;
+            if(!cursor.isNull(3)) bday = cursor.getInt(3);
+            if(!cursor.isNull(4)) dday = cursor.getInt(4);
+
+            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),bday,dday);
             authorVector.add(a);
         }
         return authorVector;
@@ -75,7 +88,11 @@ public class ConnectorForAuthors extends DbHelper {
         Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
                 +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE+" ORDER BY "+AUTHORS_COL_LASTNAME,null);
         while(cursor.moveToNext()){
-            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            Integer bday = null;
+            Integer dday = null;
+            if(!cursor.isNull(3)) bday = cursor.getInt(3);
+            if(!cursor.isNull(4)) dday = cursor.getInt(4);
+            Author a = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),bday,dday);
             authorVector.add(a);
         }
         return authorVector;
@@ -99,7 +116,11 @@ public class ConnectorForAuthors extends DbHelper {
         Cursor cursor = db.rawQuery("SELECT "+AUTHORS_COL_ID+", "+AUTHORS_COL_NAME+", "+AUTHORS_COL_LASTNAME+", "+AUTHORS_COL_BIRTHYEAR+", "
                 +AUTHORS_COL_DEATHYEAR+" FROM "+AUTHORS_TABLE+" WHERE "+AUTHORS_COL_ID+ " = "+id,null);
         while(cursor.moveToNext()){
-            author = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),cursor.getInt(4));
+            Integer bday = null;
+            Integer dday = null;
+            if(!cursor.isNull(3)) bday = cursor.getInt(3);
+            if(!cursor.isNull(4)) dday = cursor.getInt(4);
+            author = new Author(cursor.getInt(0),cursor.getString(1),cursor.getString(2),bday,dday);
 
         }
         return author;

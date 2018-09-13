@@ -2,18 +2,16 @@ package bibliotech4android.com.bibliotechforandroid;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 public class ConnectorForBooks extends DbHelper {
     private Context mContext;
     private String[] bookMisc = new String[]
-            {BOOKS_COL_TITLE,"author",BOOKS_COL_TAGS,BOOKS_COL_ISBN,BOOKS_COL_PUBLISHER,BOOKS_COL_LOCALIZATION,BOOKS_COL_ISSUEYEAR,BOOKS_COL_ID};
+            {BOOKS_COL_TITLE,"author",BOOKS_COL_TAGS,BOOKS_COL_ISBN,BOOKS_COL_PUBLISHER,BOOKS_COL_LOCALIZATION,BOOKS_COL_ISSUEYEAR,
+                    BOOKS_COL_ID,BOOKS_COL_AUTHORID};
     public ConnectorForBooks(Context context) {
         super(context);
         mContext = context;
@@ -74,10 +72,10 @@ public class ConnectorForBooks extends DbHelper {
         }
         return bookVector;
     }
-    public Vector<Book> selectBooks(String what){
+    public Vector<Book> selectBooks(String author){
         ConnectorForAuthors cfa = new ConnectorForAuthors(mContext);
         Vector<Book> bookVector = new Vector<>();
-        Vector<Author> av = cfa.selectAuthors(what);
+        Vector<Author> av = cfa.selectAuthors(author);
         String[] authId = new String[av.size()];
         String query = "SELECT "+BOOKS_COL_ID+", "+BOOKS_COL_TITLE+", "+BOOKS_COL_PUBLISHER+", "+BOOKS_COL_ISSUEYEAR+", "+BOOKS_COL_ISBN+", "
                 +BOOKS_COL_AUTHORID+", "+BOOKS_COL_TAGS+", "+BOOKS_COL_NOTES+", "+BOOKS_COL_ISLENT+", "

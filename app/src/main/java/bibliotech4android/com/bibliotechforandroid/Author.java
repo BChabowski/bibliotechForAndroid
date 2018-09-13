@@ -28,9 +28,9 @@ public class Author implements Serializable {
     @Override
     public String toString(){
         String birth, death;
-        if(yearOfBirth==0) birth = "";
+        if(yearOfBirth==null) birth = "";
         else birth = yearOfBirth.toString();
-        if(yearOfDeath==0) death = "";
+        if(yearOfDeath==null) death = "";
         else death = yearOfDeath.toString();
         return lastName+", "+name+" ("+birth+" - "+death+")";
     }

@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -28,6 +27,7 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
         Bundle resources = getIntent().getExtras();
         Intent intent = getIntent();
         if(resources.containsKey("misc")){
+            //it's a book!
             isBook = true;
             ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
             String searchQuery = intent.getStringExtra("what");
@@ -42,10 +42,10 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
             results = cfb.toArrayOfStrings(bv);
         }
         else {
+            //it's an author!
             isBook = false;
             ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
             String searchQuery = intent.getStringExtra("what");
-            Toast.makeText(this,searchQuery,Toast.LENGTH_SHORT).show();
             av = cfa.selectAuthors(searchQuery);
             results = cfa.toArrayOfStrings(av);
         }
@@ -54,6 +54,9 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+
         adapter = new RecyclerViewAdapter(this, results);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
