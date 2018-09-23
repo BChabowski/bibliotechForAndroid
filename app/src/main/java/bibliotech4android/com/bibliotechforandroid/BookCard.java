@@ -27,12 +27,14 @@ public class BookCard extends AppCompatActivity {
     ArrayList<String> authorsArray;
     private String[] lentOrNot;
     ArrayAdapter<String> adapter;
-    Vector<Author> authorVector;
+    Vector<Author> authors;
     AutoCompleteTextView authorTV;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_card);
+
+
         Button add = findViewById(R.id.addBookButton);
         Button update = findViewById(R.id.updateBookButton);
         Button delete = findViewById(R.id.deleteBookButton);
@@ -51,8 +53,8 @@ public class BookCard extends AppCompatActivity {
         final ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
 
         //autocompletetextview handling
-        authorVector = cfa.showAllAuthors();
-        authorsArray = cfa.toArrayOfStrings(authorVector);
+        authors = cfa.showAllAuthors();
+        authorsArray = cfa.toArrayOfStrings(authors);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, authorsArray);
 
         authorTV = findViewById(R.id.authorATV);
@@ -65,7 +67,7 @@ public class BookCard extends AppCompatActivity {
                 //method for figuring out the authorid
                 for (int i = 0; i < authorsArray.size(); i++) {
                     if (authorsArray.get(i).equals(adapter.getItem(position))) {
-                        authorId = authorVector.get(i).getId();
+                        authorId = authors.get(i).getId();
                         break;
                     }
                 }
@@ -129,7 +131,7 @@ public class BookCard extends AppCompatActivity {
             authorTV.setInputType(InputType.TYPE_NULL);
         }
         Resources resources = getResources();
-        lentOrNot = resources.getStringArray(R.array.lent_not_lent);
+        lentOrNot = resources.getStringArray(R.array.lent_or_not);
         final TextView whoLentTV = findViewById(R.id.whoLentTV);
         final EditText whoLentField = findViewById(R.id.bookWhoLentField);
         final Spinner isLentSpinner = findViewById(R.id.isLentSpinner);
@@ -137,6 +139,7 @@ public class BookCard extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isLentSpinner.getSelectedItem().toString().equals(lentOrNot[1])) {
+
                     //if book was lent, show who lent it
                     whoLentField.setVisibility(View.VISIBLE);
                     whoLentTV.setVisibility(View.VISIBLE);
@@ -166,7 +169,6 @@ public class BookCard extends AppCompatActivity {
             }
             else Toast.makeText(getApplicationContext(),"Nie udało się dodać książki",Toast.LENGTH_SHORT).show();
         }
-        //else  Toast.makeText(getApplicationContext(),"To nie powinno się pojawić",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -190,8 +192,8 @@ public class BookCard extends AppCompatActivity {
         //updating list of authors after adding a new one
         adapter.clear();
         ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-        authorVector = cfa.showAllAuthors();
-        authorsArray = cfa.toArrayOfStrings(authorVector);
+        authors = cfa.showAllAuthors();
+        authorsArray = cfa.toArrayOfStrings(authors);
         for (String s : authorsArray){
             adapter.add(s);
         }
@@ -271,7 +273,6 @@ public class BookCard extends AppCompatActivity {
         EditText tags = findViewById(R.id.bookTagsField);
         EditText whoLent = findViewById(R.id.bookWhoLentField);
         Spinner isLent = findViewById(R.id.isLentSpinner);
-        //Toast.makeText(getApplicationContext(),"tada",Toast)
 
         if(title.getText().toString().equals("")||publisher.getText().toString().equals("")||issueYear.getText().toString().equals("")||
                 !issueYear.getText().toString().matches("\\d+")|| tags.getText().toString().equals("")||

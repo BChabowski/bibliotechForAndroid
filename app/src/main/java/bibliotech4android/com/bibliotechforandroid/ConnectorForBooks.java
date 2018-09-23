@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class ConnectorForBooks extends DbHelper {
-    private Context mContext;
+    private Context context;
     private String[] bookMisc = new String[]
             {BOOKS_COL_TITLE,"author",BOOKS_COL_TAGS,BOOKS_COL_ISBN,BOOKS_COL_PUBLISHER,BOOKS_COL_LOCALIZATION,BOOKS_COL_ISSUEYEAR,
                     BOOKS_COL_ID,BOOKS_COL_AUTHORID};
     public ConnectorForBooks(Context context) {
         super(context);
-        mContext = context;
+        this.context = context;
     }
 
     public boolean addBook(Book book) {
-        SQLiteDatabase db = getDb(mContext);
+        SQLiteDatabase db = getDb(context);
         ContentValues contentValues = new ContentValues();
         contentValues.put(BOOKS_COL_TITLE, book.getTitle());
         contentValues.put(BOOKS_COL_PUBLISHER, book.getPublisher());
@@ -34,7 +34,7 @@ public class ConnectorForBooks extends DbHelper {
         return result!=-1;
     }
     public boolean updateBook(Book book) {
-        SQLiteDatabase db = getDb(mContext);
+        SQLiteDatabase db = getDb(context);
         ContentValues contentValues = new ContentValues();
         contentValues.put(BOOKS_COL_TITLE, book.getTitle());
         contentValues.put(BOOKS_COL_PUBLISHER, book.getPublisher());
@@ -50,14 +50,14 @@ public class ConnectorForBooks extends DbHelper {
         return result!=-1;
     }
     public boolean deleteBook(int id){
-        SQLiteDatabase db = getDb(mContext);
+        SQLiteDatabase db = getDb(context);
         long rowsAffected = db.delete(BOOKS_TABLE,BOOKS_COL_ID+"=?",new String[]{String.valueOf(id)});
         return (rowsAffected>0);
     }
 
     public Vector<Book> selectBooks(String what, Integer where){
         Vector<Book> bookVector = new Vector<>();
-        SQLiteDatabase db = getDb(mContext);
+        SQLiteDatabase db = getDb(context);
         String[] searched = {what};
         String column = bookMisc[where];
         String query = "SELECT "+BOOKS_COL_ID+", "+BOOKS_COL_TITLE+", "+BOOKS_COL_PUBLISHER+", "+BOOKS_COL_ISSUEYEAR+", "+BOOKS_COL_ISBN+", "
@@ -73,7 +73,7 @@ public class ConnectorForBooks extends DbHelper {
         return bookVector;
     }
     public Vector<Book> selectBooks(String author){
-        ConnectorForAuthors cfa = new ConnectorForAuthors(mContext);
+        ConnectorForAuthors cfa = new ConnectorForAuthors(context);
         Vector<Book> bookVector = new Vector<>();
         Vector<Author> av = cfa.selectAuthors(author);
         String[] authId = new String[av.size()];
@@ -88,7 +88,7 @@ public class ConnectorForBooks extends DbHelper {
             else query += " OR "+BOOKS_COL_AUTHORID+"=?";
         }
 
-        Cursor cursor = getDb(mContext).rawQuery(query,authId);
+        Cursor cursor = getDb(context).rawQuery(query,authId);
         while(cursor.moveToNext()){
             Book b = new Book(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getInt(3),
                     cursor.getString(4),cursor.getInt(5),cursor.getString(6),cursor.getString(7),
@@ -101,7 +101,7 @@ public class ConnectorForBooks extends DbHelper {
     public ArrayList<String> toArrayOfStrings(Vector<Book> bv){
         ArrayList<String> booksAsStringsArray = new ArrayList<>();
         for(Book b : bv){
-            String s = b.toString(mContext);
+            String s = b.toString(context);
             booksAsStringsArray.add(s);
         }
         return booksAsStringsArray;

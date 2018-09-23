@@ -12,34 +12,34 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> mData;
-    private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
+    private ArrayList<String> data;
+    private LayoutInflater inflater;
+    private ItemClickListener itemClickListener;
 
     // data is passed into the constructor
     RecyclerViewAdapter(Context context, ArrayList<String> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+        this.inflater = LayoutInflater.from(context);
+        this.data = data;
     }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.rc_row, parent, false);
+        View view = inflater.inflate(R.layout.rc_row, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String item = mData.get(position);
+        String item = data.get(position);
         holder.myTextView.setText(item);
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return data.size();
     }
 
 
@@ -55,14 +55,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            if (itemClickListener != null) itemClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
 
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
+        this.itemClickListener = itemClickListener;
     }
 
     // parent activity will implement this method to respond to click events

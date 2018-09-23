@@ -78,29 +78,54 @@ public class AuthorCard extends AppCompatActivity {
 
 
     public void add(View view) {
-        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-        Author a = prepareAuthor();
-        if(a!=null) {
-            boolean isAdded = cfa.addAuthor(a);
-            if (isAdded) {
-                Toast.makeText(getApplicationContext(), "Udało się dodać autora!", Toast.LENGTH_SHORT).show();
-                finish();
-            } else
-                Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
-        }
 
+        ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
+        Author author = prepareAuthor();
+        Vector<Author> authors = cfa.showAllAuthors();
+        boolean isUnique = true;
+
+        if(author!=null) {
+            //find whether there is such author in db
+            for (Author authorFromDb : authors) {
+                if (authorFromDb.toString().equals(author.toString())) {
+                    Toast.makeText(getApplicationContext(), "Taki autor już istnieje w bazie danych!", Toast.LENGTH_SHORT).show();
+                    isUnique = false;
+                    break;
+                }
+            }
+            //and if not, proceed
+            if (isUnique) {
+                boolean isAdded = cfa.addAuthor(author);
+                if (isAdded) {
+                    Toast.makeText(getApplicationContext(), "Udało się dodać autora!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else
+                    Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void save(View view) {
         ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
-            Author a = prepareAuthor();
-            if(a!=null) {
-                boolean isSaved = cfa.updateAuthor(a);
-                if (isSaved) {
-                    Toast.makeText(getApplicationContext(), "Udało się zaktualizować autora!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else
-                    Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+            Author author = prepareAuthor();
+        Vector<Author> authors = cfa.showAllAuthors();
+        boolean isUnique = true;
+            if(author!=null) {
+                for (Author authorFromDb : authors) {
+                    if (authorFromDb.toString().equals(author.toString())) {
+                        Toast.makeText(getApplicationContext(), "Taki autor już istnieje w bazie danych!", Toast.LENGTH_SHORT).show();
+                        isUnique = false;
+                        break;
+                    }
+                }
+                if (isUnique) {
+                    boolean isSaved = cfa.updateAuthor(author);
+                    if (isSaved) {
+                        Toast.makeText(getApplicationContext(), "Udało się zaktualizować autora!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else
+                        Toast.makeText(getApplicationContext(), "Niepowodzenie!", Toast.LENGTH_SHORT).show();
+                }
             }
     }
 
@@ -109,8 +134,8 @@ public class AuthorCard extends AppCompatActivity {
         final ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
         ConnectorForBooks cfb = new ConnectorForBooks(getApplicationContext());
         //check if author has some books linked to him
-        Vector<Book> bv = cfb.selectBooks(authorId.toString(),8);
-        if(bv.isEmpty()) {
+        Vector<Book> books = cfb.selectBooks(authorId.toString(),8);
+        if(books.isEmpty()) {
             Dialog.OnClickListener listener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -140,7 +165,6 @@ public class AuthorCard extends AppCompatActivity {
         EditText death = findViewById(R.id.deathYearField);
         String bY = birth.getText().toString();
         String dY = death.getText().toString();
-        //null handling
         Integer birthYear;
         Integer deathYear;
 
@@ -155,10 +179,10 @@ public class AuthorCard extends AppCompatActivity {
         return null;
         }
 
-        //if it's edited author
+        //if it's an edited author
         if (authorId != null)
             return new Author(authorId, name.getText().toString(), lastName.getText().toString(), birthYear, deathYear);
-        //if it's new author
+        //if it's a new author
         return new Author(name.getText().toString(), lastName.getText().toString(), birthYear, deathYear);
     }
 }

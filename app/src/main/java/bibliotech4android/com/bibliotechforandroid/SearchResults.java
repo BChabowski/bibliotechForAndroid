@@ -14,8 +14,9 @@ import java.util.Vector;
 public class SearchResults extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
     private RecyclerViewAdapter adapter;
     private ArrayList<String> results  = new ArrayList<>();
-    private Vector<Author> av = new Vector<>();
-    private Vector<Book> bv = new Vector<>();
+    private Vector<Author> authors = new Vector<>();
+    private Vector<Book> books = new Vector<>();
+    private final Integer AUTHOR = 1;
     private boolean isBook;
 
     @Override
@@ -33,21 +34,22 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
             String searchQuery = intent.getStringExtra("what");
             String where = intent.getStringExtra("misc");
             Integer column = Integer.parseInt(where);
-            if(column==1){
-                bv = cfb.selectBooks(searchQuery);
+            if(column==AUTHOR){
+                //search books by author
+                books = cfb.selectBooks(searchQuery);
             }
             else {
-                bv = cfb.selectBooks(searchQuery,column);
+                books = cfb.selectBooks(searchQuery,column);
             }
-            results = cfb.toArrayOfStrings(bv);
+            results = cfb.toArrayOfStrings(books);
         }
         else {
             //it's an author!
             isBook = false;
             ConnectorForAuthors cfa = new ConnectorForAuthors(getApplicationContext());
             String searchQuery = intent.getStringExtra("what");
-            av = cfa.selectAuthors(searchQuery);
-            results = cfa.toArrayOfStrings(av);
+            authors = cfa.selectAuthors(searchQuery);
+            results = cfa.toArrayOfStrings(authors);
         }
         // set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.rvSearchResults);
@@ -66,13 +68,13 @@ public class SearchResults extends AppCompatActivity implements RecyclerViewAdap
     @Override
     public void onItemClick(View view, int position) {
         if(isBook){
-            int i = bv.get(position).getId();
+            int i = books.get(position).getId();
             Intent intent = new Intent(this,BookCard.class);
             intent.putExtra("BookId",String.valueOf(i));
             startActivity(intent);
             finish();
         }else {
-            int i = av.get(position).getId();
+            int i = authors.get(position).getId();
             Intent intent = new Intent(this, AuthorCard.class);
             intent.putExtra("Position", i);
             startActivity(intent);

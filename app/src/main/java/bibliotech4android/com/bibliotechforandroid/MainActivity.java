@@ -90,16 +90,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public void search(View view){
         Spinner bookMisc = findViewById(R.id.bookMiscSpinner);
-        //Spinner authorOrBook = findViewById(R.id.AuthorOrBookSpinner);
         EditText searchField = findViewById(R.id.searchField);
         Intent intent = new Intent(this,SearchResults.class);
         intent.putExtra("what",searchField.getText().toString());
-        //intent.putExtra("where",authorOrBook.getSelectedItem().toString());
         if(bookMisc.isEnabled()) {
             intent.putExtra("misc",String.valueOf(bookMisc.getSelectedItemId()));
-            //Toast.makeText(this,"enabled",Toast.LENGTH_SHORT).show();
         }
-        //Toast.makeText(this,intent.getStringExtra("misc"),Toast.LENGTH_SHORT).show();
         startActivity(intent);
     }
 }

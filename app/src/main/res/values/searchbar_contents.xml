@@ -16,7 +16,7 @@
         <item>Rok wydania</item>
     </string-array>
     <string name="is_lent">Wybierz co wyszukać</string>
-    <string-array name="lent_not_lent">
+    <string-array name="lent_or_not">
         <item>Dostępna</item>
         <item>Wypożyczona</item>
     </string-array>

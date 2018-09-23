@@ -32,13 +32,10 @@ public class DbHelper extends SQLiteOpenHelper {
     static final String USER_COL_FAVAUT = "favaut";
 
     private static DbHelper dbInstance;
-    private Context mctx;
-
 
 
     public DbHelper(Context context) {
         super(context,DATABASE_NAME,null,1);
-        mctx = context;
     }
 
     @Override

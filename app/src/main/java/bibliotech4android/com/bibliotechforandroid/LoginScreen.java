@@ -28,8 +28,8 @@ public class LoginScreen extends AppCompatActivity {
         Button resetPasswordButton = findViewById(R.id.loginResetPassButton);
 
         cfu = new ConnectorForUser(getApplicationContext());
-        boolean isSigned = cfu.isSignedUp();
-        if (isSigned) {
+        boolean isSignedUp = cfu.isSignedUp();
+        if (isSignedUp) {
             login.setVisibility(View.VISIBLE);
             signInButton.setVisibility(View.VISIBLE);
             signUpButton.setVisibility(View.INVISIBLE);
@@ -68,10 +68,10 @@ public class LoginScreen extends AppCompatActivity {
     public void login(View view) {
         EditText login = findViewById(R.id.loginField);
         EditText password = findViewById(R.id.loginPasswordField);
-        String log = login.getText().toString();
-        String pass = password.getText().toString();
-        boolean ispok = cfu.isPassOk(log, pass);
-        if (ispok) {
+        String loginEntered = login.getText().toString();
+        String passwordEntered = password.getText().toString();
+        boolean isPassOk = cfu.isPassOk(loginEntered, passwordEntered);
+        if (isPassOk) {
             Intent intent = new Intent(this,MainActivity.class);
             isLogged = true;
             finish();
@@ -114,16 +114,13 @@ public class LoginScreen extends AppCompatActivity {
         }
         else
             Toast.makeText(this, "Podano niewłaściwego autora. Proszę zwrócić uwagę na " +
-                    "kolejność imienia i nazwiska", Toast.LENGTH_SHORT).show();
+                    "kolejność imienia i nazwiska i wielkie litery", Toast.LENGTH_LONG).show();
     }
 
     public void forgottenPassword(View view) {
-        //newpass = true;
         Intent intent = new Intent(this,LoginScreen.class);
         intent.putExtra("newpass",true);
-//        recreate();
         finish();
-//        startActivity(getIntent());
         startActivity(intent);
     }
 }
